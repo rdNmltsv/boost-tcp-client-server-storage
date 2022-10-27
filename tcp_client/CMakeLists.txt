@@ -37,6 +37,17 @@ FetchContent_GetProperties(boost SOURCE_DIR BOOST_DIR)
 target_include_directories(${PROJECT_NAME} PUBLIC ${BOOST_DIR})
 # END Boost
 
+# START nlohmann_json
+FetchContent_Declare(
+    json 
+    URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
+
+FetchContent_MakeAvailable(json)
+message("Nlohmann_json populated.")
+
+target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+# END nlohmann_json
+
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
 		ws2_32
