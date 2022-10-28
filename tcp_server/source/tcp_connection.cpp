@@ -28,7 +28,7 @@ void TCPConnection::Post(const std::string &message) {
 }
 
 void TCPConnection::asyncRead() {
-    io::async_read_until(_socket, _streamBuf, "\n", 
+	io::async_read_until(_socket, _streamBuf, "}", 
 		[self = shared_from_this()] (boost::system::error_code ec, size_t bytesTransferred) {
 			self->onRead(ec, bytesTransferred);
 		}
@@ -43,7 +43,7 @@ void TCPConnection::onRead(boost::system::error_code ec, size_t bytesTranferred)
     }
 
     std::stringstream message;
-    message << _username << ": " << std::istream(&_streamBuf).rdbuf();
+	message << std::istream(&_streamBuf).rdbuf();
     _streamBuf.consume(bytesTranferred);
 
     _messageHandler(message.str());

@@ -12,7 +12,7 @@ int TCPServer::Run() {
     try {
         startAccept();
 		
-		std::cout << "Server is running on port 1337.\n";
+		std::cout << "Server is running on port " << _port << ".\n";
 		
         _ioContext.run();
     } 
@@ -23,16 +23,13 @@ int TCPServer::Run() {
     return 0;
 }
 
-void TCPServer::Broadcast(const std::string &message) {
-    for (auto& connection : _connections) {
-        connection->Post(message);
-    }
+void TCPServer::Send(TCPConnection::pointer connection, const std::string& message) {
+    connection->Post(message);
 }
 
 void TCPServer::startAccept() {
     _socket.emplace(_ioContext);
 
-    // asynchronously accept the connection
     _acceptor.async_accept(*_socket, 
 		[this](const boost::system::error_code& error) {
 			auto connection = TCPConnection::Create(std::move(*_socket));
@@ -45,12 +42,12 @@ void TCPServer::startAccept() {
 			
 			if (!error) {
 				connection->Start(
-					[this](const std::string& message) { 
-						if (OnClientMessage){
-							OnClientMessage(message); 
+					[this, weak = std::weak_ptr(connection)](const std::string& message) { 
+						if (auto shared = weak.lock(); shared && OnClientMessage){
+							OnClientMessage(shared, message); 
 						}
 					},
-					[&, weak = std::weak_ptr(connection)] {
+					[&, weak = std::weak_ptr(connection)] () {
 						if (auto shared = weak.lock(); shared && _connections.erase(shared)) {
 							if (OnLeave) {
 								OnLeave(shared);

@@ -8,12 +8,11 @@
 namespace io = boost::asio;
 using io::ip::tcp;
 
-using MessageHandler = std::function<void(std::string)>;
-using ErrorHandler = std::function<void()>;
-
 class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     public:
         using pointer = std::shared_ptr<TCPConnection>;
+		using MessageHandler = std::function<void(std::string)>;
+		using ErrorHandler = std::function<void()>;
 
         static pointer Create(io::ip::tcp::socket&& socket) {
             return pointer(new TCPConnection(std::move(socket)));
@@ -33,7 +32,6 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
     private:
         explicit TCPConnection(tcp::socket&& socket);
 
-        // Wait for a new message from client
         void asyncRead();
         void onRead(boost::system::error_code ec, size_t bytesTranferred);
 

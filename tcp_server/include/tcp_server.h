@@ -13,14 +13,14 @@ using io::ip::tcp;
 class TCPServer {
     using OnJoinHandler = std::function<void(TCPConnection::pointer)>;
     using OnLeaveHandler = std::function<void(TCPConnection::pointer)>;
-    using OnClientMessageHandler = std::function<void(std::string)>;
+    using OnClientMessageHandler = std::function<void(TCPConnection::pointer, std::string)>;
 
 public:
     TCPServer(int port);
 
     int Run();
 	
-    void Broadcast(const std::string& message);
+	void Send(TCPConnection::pointer connection, const std::string& message);
 	
 private:
     void startAccept();
