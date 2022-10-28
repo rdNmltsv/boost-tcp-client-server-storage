@@ -1,4 +1,5 @@
 #include "tcp_client.h"
+#include <iostream>
 
 TCPClient::TCPClient(const std::string &address, int port) : _socket(_ioContext) {
     io::ip::tcp::resolver resolver {_ioContext};
@@ -12,7 +13,6 @@ void TCPClient::Run() {
 				asyncRead();
 		}
 	);
-	std::cout << "Connected to server.\n";
     _ioContext.run();
 }
 
@@ -35,7 +35,7 @@ void TCPClient::Post(const std::string &message) {
 }
 
 void TCPClient::asyncRead() {
-    io::async_read_until(_socket, _streamBuf, "\n", 
+	io::async_read_until(_socket, _streamBuf, "}", 
 		[this](boost::system::error_code ec, size_t bytesTransferred) {
 			onRead(ec, bytesTransferred);
 		}
@@ -67,7 +67,8 @@ void TCPClient::onWrite(boost::system::error_code ec, size_t bytesTransferred) {
         Stop();
         return;
     }
-
+	
+	// std::cout << "Sending message: " << _outgoingMessages.front() << '\n';
     _outgoingMessages.pop();
 
     if (!_outgoingMessages.empty()) {
