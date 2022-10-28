@@ -28,16 +28,16 @@ void TCPConnection::Post(const std::string &message) {
 }
 
 void TCPConnection::asyncRead() {
-    io::async_read_until(_socket, _streamBuf, "\n", [self = shared_from_this()]
-    (boost::system::error_code ec, size_t bytesTransferred) {
-        self->onRead(ec, bytesTransferred);
-    });
+    io::async_read_until(_socket, _streamBuf, "\n", 
+		[self = shared_from_this()] (boost::system::error_code ec, size_t bytesTransferred) {
+			self->onRead(ec, bytesTransferred);
+		}
+	);
 }
 
 void TCPConnection::onRead(boost::system::error_code ec, size_t bytesTranferred) {
     if (ec) {
         _socket.close(ec);
-
         _errorHandler();
         return;
     }

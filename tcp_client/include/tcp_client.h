@@ -4,6 +4,7 @@
 #include <queue>
 
 namespace io = boost::asio;
+using io::ip::tcp;
 
 using MessageHandler = std::function<void(std::string)>;
 

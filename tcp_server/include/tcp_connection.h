@@ -4,8 +4,9 @@
 #include <memory>
 #include <queue>
 
-using boost::asio::ip::tcp;
+
 namespace io = boost::asio;
+using io::ip::tcp;
 
 using MessageHandler = std::function<void(std::string)>;
 using ErrorHandler = std::function<void()>;
@@ -30,7 +31,7 @@ class TCPConnection : public std::enable_shared_from_this<TCPConnection> {
         void Post(const std::string& message);
 
     private:
-        explicit TCPConnection(io::ip::tcp::socket&& socket);
+        explicit TCPConnection(tcp::socket&& socket);
 
         // Wait for a new message from client
         void asyncRead();

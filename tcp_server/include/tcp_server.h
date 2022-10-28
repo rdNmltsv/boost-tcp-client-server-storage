@@ -7,11 +7,8 @@
 #include <unordered_set>
 
 namespace io = boost::asio;
+using io::ip::tcp;
 
-enum class IPV {
-    V4,
-    V6
-};
 
 class TCPServer {
     using OnJoinHandler = std::function<void(TCPConnection::pointer)>;
@@ -19,7 +16,7 @@ class TCPServer {
     using OnClientMessageHandler = std::function<void(std::string)>;
 
 public:
-    TCPServer(IPV ipv, int port);
+    TCPServer(int port);
 
     int Run();
 	
@@ -34,12 +31,10 @@ public:
     OnClientMessageHandler OnClientMessage;
 
 private:
-    IPV _ipVersion;
     int _port;
-
     io::io_context _ioContext;
-    io::ip::tcp::acceptor  _acceptor;
-    std::optional<io::ip::tcp::socket> _socket;
+    tcp::acceptor  _acceptor;
+    std::optional<tcp::socket> _socket;
     std::unordered_set<TCPConnection::pointer> _connections {};
 };
 

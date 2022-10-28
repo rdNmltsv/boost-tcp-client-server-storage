@@ -2,8 +2,7 @@
 #include "tcp_server.h"
 
 int main(int argc, char* argv[]) {
-
-    TCPServer server {IPV::V4, 1337};
+    TCPServer server(1337);
 
     server.OnJoin = [](TCPConnection::pointer connection) {
         std::cout << "User has joined the server: " << connection->GetUsername() << std::endl;
@@ -20,6 +19,7 @@ int main(int argc, char* argv[]) {
         // Send message to all clients
         // server.Broadcast(message);
     };
-
-    return server.Run();
+	
+	int res = server.Run();
+	return res;
 }

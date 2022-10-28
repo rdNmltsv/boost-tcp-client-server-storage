@@ -6,11 +6,13 @@ TCPClient::TCPClient(const std::string &address, int port) : _socket(_ioContext)
 }
 
 void TCPClient::Run() {
-    io::async_connect(_socket, _endpoints, [this](boost::system::error_code ec, io::ip::tcp::endpoint ep) {
-        if (!ec)
-            asyncRead();
-    });
-
+    io::async_connect(_socket, _endpoints, 
+		[this](boost::system::error_code ec, io::ip::tcp::endpoint ep) {
+			if (!ec)
+				asyncRead();
+		}
+	);
+	std::cout << "Connected to server.\n";
     _ioContext.run();
 }
 

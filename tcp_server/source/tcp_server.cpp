@@ -3,14 +3,17 @@
 
 using boost::asio::ip::tcp;
 
-TCPServer::TCPServer(IPV ipv, int port) : 
-	_ipVersion(ipv), _port(port),
-    _acceptor(_ioContext, tcp::endpoint(_ipVersion == IPV::V4 ? tcp::v4() : tcp::v6(), _port)) 
+TCPServer::TCPServer(int port) :  
+	_port(port),
+    _acceptor(_ioContext, tcp::endpoint(tcp::v4(), _port)) 
 {}
 
 int TCPServer::Run() {
     try {
         startAccept();
+		
+		std::cout << "Server is running on port 1337.\n";
+		
         _ioContext.run();
     } 
 	catch (std::exception& e) {
